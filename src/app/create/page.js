@@ -15,18 +15,22 @@ import axios from 'axios';
 function ProductCreationPage() {
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState({
-    title: '',
-    description: '',
-    deployLink: '',
-    image: null,
-    type: '',
-    price: 0,
-    productLink: null,
-    category: '',
+    name,
+    description,
+    price,
+    rating,
+    category,
+    techStack, // array
+    features,  // array
+    image,
+    deployLink,
+    productLink,
+    timeStamp,
   });
 
   const [imagePreview, setImagePreview] = useState(null);
   const [productFileName, setProductFileName] = useState(null);
+  const [imageLoading,setImageLoading] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,6 +39,26 @@ function ProductCreationPage() {
       [name]: name === 'price' ? parseFloat(value) || 0 : value,
     }));
   };
+
+
+  const uploadFile = (e)=>{
+    const {name,files}= e.target;
+      console.log(name,files)
+      const uploadToS3 = async() =>{
+        setImageLoading(true)
+          const fileInfo = new FormData();
+          fileInfo.append('file',files[0]);
+          fileInfo.append('prefix',name)
+          const response = await axios.post("/api/upload",fileInfo);
+          console.log(response);
+          if(response.data){
+            setImageLoading(false)
+          }
+      }
+      uploadToS3()
+
+  }
+
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
@@ -108,7 +132,7 @@ function ProductCreationPage() {
                 name="title"
                 placeholder="Enter product title"
                 value={product.title}
-                onChange={handleInputChange}
+                onChange={(e)=>setProduct({...product,title:e.target.value})}
                 required
               />
             </div>
@@ -119,7 +143,7 @@ function ProductCreationPage() {
                 name="description"
                 placeholder="Enter product description"
                 value={product.description}
-                onChange={handleInputChange}
+                onChange={(e)=>setProduct({...product,description:e.target.value})}
                 required
               />
             </div>
@@ -171,11 +195,11 @@ function ProductCreationPage() {
                 id="productLink"
                 name="productLink"
                 type="file"
-                onChange={handleFileChange}
-              />
-              {productFileName && (
+                onChange={uploadFile}
+                />
+              {/* {productFileName && (
                 <p className="mt-2">Uploaded File: {productFileName}</p>
-              )}
+              )} */}
             </div>
             <div>
               <Label htmlFor="image">Upload Image</Label>
@@ -183,15 +207,16 @@ function ProductCreationPage() {
                 id="image"
                 name="image"
                 type="file"
-                onChange={handleFileChange}
+                onChange={uploadFile}
               />
-              {imagePreview && (
+              {imageLoading ? "Uploading..." : null}
+              {/* {imagePreview && (
                 <img
                   src={imagePreview}
                   alt="Preview"
                   className="mt-4 w-full h-64 object-cover rounded"
                 />
-              )}
+              )} */}
             </div>
           </CardContent>
         </Card>
