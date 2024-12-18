@@ -31,7 +31,7 @@ export const POST = async(request) =>{
             ContentType:file.type
         }
         await s3.upload(params).promise();
-        return NextResponse.json({messaage:`https://d1520l0f8yvbpl.cloudfront.net/${prefix}/${file.name}`},{status:201})
+        return NextResponse.json({message:`https://d1520l0f8yvbpl.cloudfront.net/${prefix}/${file.name}`},{status:201})
     } catch (error) {
         return NextResponse.json({message:error},{status:500})
         

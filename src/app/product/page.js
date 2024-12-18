@@ -10,14 +10,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogFooter,
-} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -26,15 +18,17 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import axios from 'axios';
+import Link  from 'next/link';
+
 
 
 
 function AllProductsPage() {
   const [products, setProducts] = useState([]); // Mock data fetched from an API
-  const [sortKey, setSortKey] = useState('title');
+  const [sortKey, setSortKey] = useState('name');
   const [isAscending, setIsAscending] = useState(true);
-  const [editProduct, setEditProduct] = useState(null);
   const [loading, setLoading] = useState(false);
+
 
   // Fetch products (replace with actual API call)
   useEffect(() => {
@@ -45,10 +39,9 @@ function AllProductsPage() {
         if (data) {
           setLoading(false);
         }
-        console.log(data.data.data);
         setProducts(data.data.data);
       } catch (error) {
-        console.log(error);
+        alert('API Error')
         setProducts([]);
       }
     };
@@ -69,20 +62,21 @@ function AllProductsPage() {
 
   // Handle Delete
   const handleDelete = (id) => {
-    setProducts((prev) => prev.filter((product) => product.id !== id));
+    async function deleteProduct(){
+      try {
+        await axios.post("/api/product/deleteproduct",{id:id});
+      } catch (error) {
+        alert("API ERROR")
+        
+      }
+    }
+    deleteProduct()
     alert('Product deleted!');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
-  // Handle Edit Save
-  const handleSave = (updatedProduct) => {
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === updatedProduct.id ? updatedProduct : product,
-      ),
-    );
-    setEditProduct(null);
-    alert('Product updated!');
-  };
 
   return (
     <div className="p-6 w-full h-full">
@@ -117,18 +111,18 @@ function AllProductsPage() {
             ? 'Loading....'
             : products.map((product, index) => (
                 <TableRow key={index}>
-                  <TableCell>{product.title}</TableCell>
+                  <TableCell>{product.name}</TableCell>
                   <TableCell>{product.description}</TableCell>
                   <TableCell>{product.type}</TableCell>
                   <TableCell>${product.price}</TableCell>
                   <TableCell className="flex gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
+                    {/* <Dialog> */}
+                        <Link href={`/update/${product.id}`}>
                         <Button size="sm" variant="outline">
                           Edit
                         </Button>
-                      </DialogTrigger>
-                      <DialogContent>
+                        </Link>
+                      {/* <DialogContent>
                         <form
                           onSubmit={(e) => {
                             e.preventDefault();
@@ -138,11 +132,11 @@ function AllProductsPage() {
                         >
                           <Label>Title</Label>
                           <Input
-                            value={editProduct?.title || ''}
+                            value={editProduct?.name || ''}
                             onChange={(e) =>
                               setEditProduct(
                                 (prev) =>
-                                  prev && { ...prev, title: e.target.value },
+                                  prev && { ...prev, name: e.target.value },
                               )
                             }
                           />
@@ -187,8 +181,8 @@ function AllProductsPage() {
                             <Button type="submit">Save</Button>
                           </DialogFooter>
                         </form>
-                      </DialogContent>
-                    </Dialog>
+                      </DialogContent> */}
+                    {/* </Dialog> */}
                     <Button
                       size="sm"
                       variant="destructive"

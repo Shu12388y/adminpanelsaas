@@ -2,61 +2,14 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { UserButton, SignedIn} from "@clerk/nextjs"
+
 
 function SideBar() {
-  const Router = useRouter();
-  const [user, setUser] = useState('');
-
-//   useEffect(() => {
-//     const token = window.localStorage.getItem('token');
-//     (async function getProfile() {
-//       try {
-//         const { data } = await axios.post('/api/auth/verify', { token });
-//         if (data) {
-//           setUser(data.data.username);
-//           window.localStorage.setItem('username', data.data.username);
-//         } else {
-//           Router.push('/');
-//         }
-//       } catch (error) {
-//         console.log(error);
-//         Router.push('/');
-//         window.localStorage.removeItem('token');
-//         window.localStorage.removeItem('username');
-//       }
-//     })();
-//   }, []);
-
-//   useEffect(() => {
-//     const userName = window.localStorage.getItem('username');
-//     if (userName) {
-//       setUser(userName);
-//     }
-//     const token = window.localStorage.getItem('token');
-//     if (!userName) {
-//       (async function getProfile() {
-//         try {
-//           const { data } = await axios.post('/api/auth/verify', { token });
-//           if (data) {
-//             setUser(data.data.username);
-//             window.localStorage.setItem('username', data.data.username);
-//           } else {
-//             Router.push('/');
-//           }
-//         } catch (error) {
-//           console.log(error);
-//         }
-//       })();
-//     }
-//   }, []);
-
   return (
-    <div className="relative flex flex-col h-full w-[15rem] shadow-lg">
+    <div className="relative flex flex-col h-full w-[18rem] shadow-lg">
       <h2 className="font-semibold text-center text-3xl py-6">
-        Welcome {user}
+        Welcome Admin
       </h2>
       <div className="flex flex-col  h-full justify-start items-center ">
         <div className="w-full  text-center py-[1rem] my-[1rem]">
