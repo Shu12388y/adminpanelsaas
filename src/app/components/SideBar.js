@@ -33,6 +33,13 @@ function SideBar() {
             </Button>
           </Link>
         </div>
+        <div className="w-full text-center py-[1rem] my-[1rem]">
+          <Link href="/orders">
+            <Button className="w-full h-[5rem] bg-white text-black hover:text-white rounded-none shadow-none">
+              Orders
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Line } from 'react-chartjs-2';
 import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import 'chart.js/auto';
+import { fetchInfo } from '@/config/fetch';
+
+
 
 function AnalysisPage() {
   const [sales, setSales] = useState(0);
@@ -14,25 +17,29 @@ function AnalysisPage() {
     bounceRate: 0,
     traffic: 0,
   });
-  // const [pageDetails, setPageDetails] = useState([
-  //   { url: '/home', visits: 1500, avgTimeSpent: '3m 15s' },
-  //   { url: '/products', visits: 1200, avgTimeSpent: '4m 10s' },
-  //   { url: '/contact', visits: 700, avgTimeSpent: '2m 30s' },
-  // ]);
-
-  // Mock fetch for data (Replace with your API calls)
   useEffect(() => {
-    // Simulate fetching sales data
-    setSales(540); // Total sales
-    setUsers(1250); // Total users
-    setWebpagePerformance({
-      avgLoadTime: 1.8, // In seconds
-      bounceRate: 40, // In percentage
-      traffic: 4500, // Total visits
-    });
+    async function fetchData() {
+      try {
+        const userInfo = await fetchInfo('/api/analysis/users');
+        const saleInfo = await fetchInfo('/api/analysis/orders');
+        setUsers(userInfo.data.message);
+        setSales(saleInfo.data.message);
+        setWebpagePerformance({
+          avgLoadTime: 1.8,
+          bounceRate: 40,
+          traffic: 4500,
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    fetchData();
+
+    return () => {
+    };
   }, []);
 
-  // Line chart data for traffic
   const trafficData = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
